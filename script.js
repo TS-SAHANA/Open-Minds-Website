@@ -396,44 +396,50 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-let currentIndex = 0;
 
-const cards = document.querySelectorAll('.resource-card');
-const totalCards = cards.length;
-const cardsToShow = 4;
+document.addEventListener('DOMContentLoaded', function() {
+  const productContainers = document.querySelectorAll('.resource-carousel');
+  const nxtBtn = document.querySelectorAll('.right-arrow');
+  const preBtn = document.querySelectorAll('.left-arrow');
 
-function updateCarousel() {
-    cards.forEach((card, index) => {
-        card.style.display = (index >= currentIndex && index < currentIndex + cardsToShow) ? 'block' : 'none';
-    });
-}
+  productContainers.forEach((item, i) => {
+      nxtBtn[i].addEventListener('click', () => {
+          const containerWidth = item.clientWidth; // Use clientWidth for consistency
+          const totalWidth = item.scrollWidth;
 
-document.querySelector('.right-arrow').addEventListener('click', () => {
-    // Move to the next set of cards
-    currentIndex += 1;
+          // If scrolled to the end, reset to start
+          if (item.scrollLeft + containerWidth >= totalWidth) {
+              item.scrollLeft = 0; // Loop back to the start
+          } else {
+              item.scrollLeft += containerWidth; // Scroll right
+          }
+      });
 
-    // Loop back to the first set if we exceed total cards
-    if (currentIndex + cardsToShow > totalCards) {
-        currentIndex = 0; // Wrap around to the first card
-    }
+      preBtn[i].addEventListener('click', () => {
+          const containerWidth = item.clientWidth; // Use clientWidth for consistency
 
-    updateCarousel();
+          // If scrolled to the beginning, reset to end
+          if (item.scrollLeft === 0) {
+              item.scrollLeft = item.scrollWidth - containerWidth; // Loop back to the end
+          } else {
+              item.scrollLeft -= containerWidth; // Scroll left
+          }
+      });
+  });
 });
 
-document.querySelector('.left-arrow').addEventListener('click', () => {
-    // Move to the previous set of cards
-    currentIndex -= 1;
+    
 
-    // Loop back to the last set if we go below zero
-    if (currentIndex < 0) {
-        currentIndex = totalCards - cardsToShow; // Wrap around to the last set of cards
-    }
 
-    updateCarousel();
-});
 
-// Initial display setup
-updateCarousel();
+
+
+
+
+
+
+
+
 
 // let currentIndex = 0;
 
@@ -506,6 +512,41 @@ updateCarousel();
 // });
 
 document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.open');
+  const contents = document.querySelectorAll('.open-minds-content');
+  let currentIndex = 0;
+
+  // Function to show content and update the card display
+  function updateDisplay() {
+      // Hide all content sections
+      contents.forEach(content => content.classList.add('hidden'));
+
+      // Show the selected content
+      const selectedContent = contents[currentIndex];
+      selectedContent.classList.remove('hidden');
+  }
+
+  // Event listener for cards
+  cards.forEach((card, index) => {
+      card.addEventListener('click', function() {
+          if (index === currentIndex - 1 || (currentIndex === 0 && index === cards.length - 1)) {
+              // Move left (previous card clicked)
+              currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+          } else if (index === currentIndex + 1 || (currentIndex === cards.length - 1 && index === 0)) {
+              // Move right (next card clicked)
+              currentIndex = (currentIndex + 1) % cards.length;
+          }
+          updateDisplay(); // Update content display
+      });
+  });
+
+  // Initialize with the first card's content displayed
+  updateDisplay(); // Display the first card's content initiall
+
+
+}); 
+
+document.addEventListener('DOMContentLoaded', function() {
   const cards = document.querySelectorAll('.open-minds-card');
   const contents = document.querySelectorAll('.open-minds-content');
   let currentIndex = 0;
@@ -538,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
   updateDisplay(); // Display the first card's content initiall
 
 
-});
+}); 
 
 function scrollToSection() {
   const target = document.getElementById('contact-section');
@@ -908,3 +949,87 @@ $('.om-gallery-thumbnail-list a').click(function(e) {
   e.preventDefault();
   $('#om-modal-gallery-image').attr('src', $(this).attr('href'));
 });
+
+// const openMindsContainer = document.querySelector('.open-minds-container');
+// const openMindsControlsContainer = document.querySelector('.open-minds-controls');
+// const openMindsControls = ['previous', 'next'];
+// const openMindsImg = document.querySelectorAll('.open-minds-img');
+
+// class OpenMindsGallery {
+//   constructor(container, img, controls) {
+//     this.container = container;
+//     this.controls = controls;
+//     this.img = [...img];
+//   }
+//   updateGallery() {
+//     this.img.forEach((e1 => {
+//       e1.classList.remove('open-minds-img-1');
+//       e1.classList.remove('open-minds-img-2');
+//       e1.classList.remove('open-minds-img-3');
+//       e1.classList.remove('open-minds-img-4');
+//       e1.classList.remove('open-minds-img-5');
+//     }));
+//     this.img.slice(0, 5).forEach((e1, i) => {
+//         e1.classList.add(`open-minds-img-${i + 1}`);
+//     });
+//   }
+//   setCurrentState(direction) {
+//     if (direction.className === 'open-minds-controls-previous') {
+//       this.img.unshift(this.img.pop());
+//     }
+//     else {
+//       this.img.push(this.img.shift());
+//     }
+//     this.updateGallery();
+//   }
+//   setControls() {
+//     this.controls.forEach((control) => {
+//       openMindsControlsContainer.appendChild(document.createElement('button')).className = `open-minds-controls-${control}`;
+//       document.querySelector(`.open-minds-controls-${control}`).innerText = control;
+//     });
+//   }
+//   useControls() {
+//     const triggers = [...openMindsControlsContainer.childNodes];
+//     triggers.forEach((control => {
+//       control.addEventListener('click', () => {
+//         e.preventDefault();
+//         this.setCurrentState(control);
+//       });
+//     });
+//   }
+// }
+
+// const openMindsGallery = new OpenMindsGallery(openMindsContainer, openMindsImg, openMindsControls);
+
+// openMindsGallery.setControls();
+// openMindsGallery.useControls();
+
+// var stackedCardSlide = new stackedCards({
+//   selector: '.stacked-cards',
+//   layout: 'slide',
+//   transformOrigin: 'center',});
+//   stackedCardSlide.init();
+
+// var swiper = new Swiper(".mySwiper", {
+//   effect: "coverflow",
+//   grabCursor: false, // Disable dragging
+//   centeredSlides: true,
+//   loop: true,
+//   slidesPerView: "auto",
+//   coverflowEffect: {
+//     rotate: 0,
+//     stretch: 0,
+//     depth: 150,
+//     modifier: 2.5,
+//     slideShadows: true,
+//   },
+//   // autoplay: {
+//   //   delay: 3000,
+//   //   disableOnInteraction: false,
+//   // },
+//   navigation: { // Enable navigation buttons
+//     nextEl: '.swiper-button-next',
+//     prevEl: '.swiper-button-prev',
+//   },
+// });
+  
